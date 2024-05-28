@@ -1,85 +1,15 @@
 #Reusable  workflow
-name: Reusable-workflow
-on: 
-      push:
-            branches:
-            - main
-      pull_request:
-            branches:
-            - main
-#CI/CD job with matrix build and upload artifact           
+name: Resuable Deploy workflow
+on: push
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        java-version: [17, 18]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: setup java
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ matrix.java-version}}
-          distribution: 'temurin'
-      ##- name: composite action
-        ##uses: ./.github/workflows
-      - name: create data
-        run: |
-            printf '{
-              "data_1": "Text data",
-              "data_2": true
-              }' >> testartifact.json
-      - uses: actions/upload-artifact@v3
-        with:
-          name: testartifact.json
-          path: ./
-
-              
-              
-      
-       
- #Download artifact 
-  Deploy:
-    needs: build
+  deploy:
     runs-on: ubuntu-latest
-    environment: development 
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v3
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-      - name: download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: testartifact.json
-          path: main
-      - name: Build project
-        run: echo "Build project"
-      - name: Deploy
-        run: echo "Deploying.."
-  test:
-    needs: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test the build
-        run: |
-          ls ${{ github.workspace }}
-        
-          
-                    
+    steps: 
+      - name: Using reusable workflow deploy
+        uses: ./.github/workflows/reusable.yml       
       
-  #Reusable workflow      
-  Deploytestenv:
-    needs: Deploy
-    uses: ./.github/workflows/reusable.yml
-   #Test environment deployment
-    ##runs-on: ubuntu-latest
-    ##environment: testing-env
-    ##steps:
-      ##- name: deploy to test env
-        ##run: echo " deployed to test environment"
+     
+  
         
 
   
