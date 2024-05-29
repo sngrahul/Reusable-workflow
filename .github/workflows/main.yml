@@ -1,5 +1,5 @@
-#Trigger workflow
-name: first-workflow
+#Trigger Reusable workflow
+name: Reusable-workflow
 on: 
       push:
             branches:
@@ -19,63 +19,16 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      ##- name: composite action
-        ##uses: ./.github/workflows
-      - name: create data
-        run: |
-            printf '{
-              "data_1": "Text data",
-              "data_2": true
-              }' >> testartifact.json
-      - uses: actions/upload-artifact@v3
-        with:
-          name: testartifact.json
-          path: ./
-
-              
-              
-      
-       
- #Download artifact 
-  Deploy:
+      - name: Build using ANT
+        run: ant -noinput -buildfile .github/workflows/build.xml     
+   #Reusable workflow      
+  Reusable-workflow:
     needs: build
-    runs-on: ubuntu-latest
-    environment: development 
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v3
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-      - name: download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: testartifact.json
-          path: main
-      - name: Build project
-        run: echo "Build project"
-      - name: Deploy
-        run: echo "Deploying.."
-  test:
-    needs: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test the build
-        run: |
-          ls ${{ github.workspace }}
-        
-          
+    uses: ./.github/workflows/reusable.yml          
                     
       
-  #Reusable workflow      
-  Deploytestenv:
-    needs: Deploy
-    uses: ./.github/workflows/reusable.yml
-   #Test environment deployment
-    ##runs-on: ubuntu-latest
-    ##environment: testing-env
-    ##steps:
-      ##- name: deploy to test env
-        ##run: echo " deployed to test environment"
+  
+
         
 
   
