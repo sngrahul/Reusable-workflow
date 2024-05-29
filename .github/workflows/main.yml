@@ -21,8 +21,8 @@ jobs:
           distribution: 'temurin'
       - name: Build using ANT
         run: ant -noinput -buildfile .github/workflows/build.xml     
-   #Reusable workflow      
-  Reusable-workflow:
+   #Reusable workflow
+  Deploy:
     needs: build
     uses: ./.github/workflows/reusable.yml          
                     

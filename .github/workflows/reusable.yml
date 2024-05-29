@@ -1,8 +1,20 @@
-name: Resuable build workflow
+name: Resuable Deploy workflow
 on: workflow_call
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Development
     steps: 
-      - name: Using reusable workflow build
-        run: echo "Build using reusable workflow"
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Deploy
+        run: echo " Deployed to Development environment"
+
+
+
+        
